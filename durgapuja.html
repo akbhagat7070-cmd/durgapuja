@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Durga Puja Samiti</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      color: #fff;
+      background-image: url('durgamaa.jjp.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      overflow-x: hidden;
+      position: relative;
+      display: none; /* पहले content छुपा रहेगा */
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top:0; left:0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.35);
+      z-index: -1;
+    }
+    header {
+      background: rgba(255,77,77,0.85);
+      color: white;
+      padding: 18px 0;
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      border-bottom-left-radius: 12px;
+      border-bottom-right-radius: 12px;
+    }
+    .main-container {
+      display: flex;
+      justify-content: space-between;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 10px;
+      gap: 20px;
+    }
+    .hero, .join-container {
+      background: rgba(0,0,0,0.6);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+    .hero {
+      flex: 0 0 48%;
+      text-align: center;
+    }
+    .hero img {
+      width: 100%;
+      max-width: 140px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
+    .hero h1 {
+      font-size: 18px;
+      margin: 5px 0;
+      color: #ffcccc;
+      font-weight: 700;
+      text-shadow: 0 0 8px #ff3333;
+    }
+    .join-container {
+      flex: 0 0 48%;
+    }
+    .join-container input {
+      width: 100%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ffb3b3;
+      font-size: 14px;
+    }
+    .join-container button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      background: linear-gradient(45deg, #ff3333, #ff6666);
+      color: white;
+      cursor: pointer;
+    }
+    .committee {
+      margin: 60px auto;
+      max-width: 900px;
+      background: rgba(0,0,0,0.5);
+      padding: 25px;
+      border-radius: 15px;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,200,200,0.5); }
+    th { background: rgba(255,77,77,0.8); }
+  </style>
+</head>
+<body>
+ 
+  <header>
+    🙏 जय हिंद दुर्गा पूजा सेवा समिति आपका हार्दिक स्वागत करता है 🙏
+  </header>
+
+  <div class="main-container">
+    <div class="hero">
+      <img src="durgamaa.jjp.jpg" alt="Durga Mata">
+      <h1>🙏 मां दुर्गा सबको सुख, शांति और समृद्धि दें 🙏</h1>
+    </div>
+
+    <div class="join-container">
+      <h2>➕ Join Committee</h2>
+      <input type="text" id="name" placeholder="नाम">
+      <input type="tel" id="phone" placeholder="मोबाइल नंबर">
+      <input type="text" id="role" placeholder="पद">
+      <button onclick="addMember()">Add Member</button>
+    </div>
+  </div>
+
+  <section class="committee">
+    <h2>समिति के सदस्य</h2>
+    <table id="committeeTable">
+      <tr>
+        <th>नाम</th>
+        <th>मोबाइल नंबर</th>
+        <th>पद</th>
+      </tr>
+    </table>
+  </section>
+
+  <script>
+    const ADMIN_PASSWORD = "12345"; // 🔑 यहाँ अपना पासवर्ड बदलें
+
+    // पासवर्ड पूछना
+    window.onload = () => {
+      const pass = prompt("कृपया Admin Password डालें:");
+      if(pass === ADMIN_PASSWORD){
+        document.body.style.display = "block"; // सही पासवर्ड तो content दिखेगा
+        loadCommittee();
+      } else {
+        alert("❌ गलत पासवर्ड! Access Denied.");
+        document.body.innerHTML = "<h2 style='color:white; text-align:center; margin-top:50px;'>Access Denied ❌</h2>";
+      }
+    };
+
+    const table = document.getElementById("committeeTable");
+
+    function loadCommittee(){
+      const saved = JSON.parse(localStorage.getItem("committeeData")) || [];
+      saved.forEach(m => addRow(m.name, m.phone, m.role));
+    }
+
+    function addMember() {
+      const name = document.getElementById("name").value;
+      const phone = document.getElementById("phone").value;
+      const role = document.getElementById("role").value;
+
+      if (name && phone && role) {
+        addRow(name, phone, role);
+
+        const members = JSON.parse(localStorage.getItem("committeeData")) || [];
+        members.push({ name, phone, role });
+        localStorage.setItem("committeeData", JSON.stringify(members));
+
+        document.getElementById("name").value = "";12345
+        document.getElementById("phone").value = "";
+        document.getElementById("role").value = "";
+      } else {
+        alert("कृपया सभी जानकारी भरें!");
+      }
+    }
+
+    function addRow(name, phone, role) {
+      const row = table.insertRow();
+      row.insertCell(0).textContent = name;
+      row.insertCell(1).textContent = phone;
+      row.insertCell(2).textContent = role;
+    }
+  </script>
+
+</body>
+</html>
